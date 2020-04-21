@@ -1,7 +1,8 @@
 # DHSLesothoSA
  
+Complete File: SALesothoDiabetes.xlsx 
 
-Attempt to create a single file containing: 
+Create a single file containing: 
 independent vars: wealth, age, country, gender, edu level
 dependent var: diabetes
 
