@@ -1,0 +1,366 @@
+diabdiag                 Ever diagnosed with diabetes                    
+                               1  Yes
+                               0  No
+diabtreat                 Taking medication for diabetes                 
+                               1  Yes
+                               0  No
+age	                 Respondent's current age                        
+                               15:49  
+                          (na)        Not applicable
+dob	                Date of birth (CMC)     
+birthmonth		Month of birth (1:12)
+birthyear 		Year of birth (4 digit year) 
+country			Respondent's current country
+				Lesotho
+				SA
+gender			Respondent's sex
+				Male
+				Female 
+eduattain                 Educational attainment                           
+                               0  No education
+                               1  Incomplete primary
+                               2  Complete primary
+                               3  Incomplete secondary
+                               4  Complete secondary
+                               5  Higher
+                           (m) 9  Missing
+eduyears                 Total number of years of education          
+                               0:25  
+                               97    Inconsistent
+                           (m) 99    Missing
+edulevel                 Educational level                                                              0  No education
+                               1  Primary
+                               2  Secondary
+                               3  Higher
+                           (m) 9  Missing
+eduyearsatlevel          Highest year of education (at level in MV106)    
+                               0     No years completed at level MV106 )
+                               1:15  
+                           (m) 99    Missing
+                          (na)       Not applicable
+wealthindex              Wealth index                                    
+                               1  Poorest
+                               2  Poorer
+                               3  Middle
+                               4  Richer
+                               5  Richest
+                          (na)    Not applicable
+wealthscore              Wealth index factor score (5 decimals)          
+                          (na)           Not applicable
+
+
+
+*******************************************************************************
+*******************************************************************************
+WEALTH INDEX COMPONENTS: 
+*******************************************************************************
+*******************************************************************************
+
+HV113                   Source of drinking water                         129    2    N    I    1    0   No   No
+                               10  PIPED WATER
+                               11  Piped into dwelling
+                               12  Piped to yard/plot
+                               13  Public tap/standpipe
+                               14  Neighbour's tap
+                               20  TUBE WELL WATER
+                               21  Tube well or borehole
+                               30  DUG WELL (OPEN/PROTECTED)
+                               31  Protected well
+                               32  Unprotected well
+                               40  SURFACE WATER
+                               41  Protected spring
+                               42  Unprotected spring
+                               43  River/dam/lake/ponds/stream/canal/irrigation channel
+                               51  Rainwater
+                               61  Tanker truck
+                               62  Cart with small tank
+                               71  Bottled water
+                               96  Other
+                               97  Not a dejure resident
+                           (m) 99  Missing
+
+HV116                   Type of toilet facility                          134    2    N    I    1    0   No   No
+                               10  FLUSH TOILET
+                               11  Flush to piped sewer system
+                               12  Flush to septic tank
+                               13  Flush to pit latrine
+                               14  Flush to somewhere else
+                               15  Flush, don't know where
+                               20  PIT TOILET LATRINE
+                               21  Ventilated Improved Pit latrine (VIP)
+                               22  Pit latrine with slab
+                               23  Pit latrine without slab/open pit
+                               30  NO FACILITY
+                               31  No facility/bush/field
+                               41  Composting toilet
+                               42  Bucket toilet
+                               43  Hanging toilet/latrine
+                               96  Other
+                               97  Not a dejure resident
+                           (m) 99  Missing
+
+HV226                  Type of cooking fuel                             148    2    N    I    1    0   No   No
+                               1   Electricity
+                               2   LPG
+                               3   Natural gas
+                               4   Biogas
+                               5   Kerosene
+                               6   Coal, lignite
+                               7   Charcoal
+                               8   Wood
+                               9   Straw/shrubs/grass
+                               10  Agricultural crop
+                               11  Animal dung
+                               95  No food cooked in house
+                               96  Other
+                           (m) 99  Missing
+
+HV119                   Household has: electricity                       136    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV120                   Household has: radio                             137    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV121                   Household has: television                        138    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV221                  Has telephone (land-line)                        146    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+
+HV122                   Household has: refrigerator                      139    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV243B                 Has watch                                        240    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+HV243A                 Has mobile telephone                             239    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+HV123                   Household has: bicycle                           140    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV124                   Household has: motorcycle/scooter                141    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV125                   Household has: car/truck                         142    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                               7  Not a dejure resident
+                           (m) 9  Missing
+HV243C                 Has animal-drawn cart                            241    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+HV243D                 Has boat with a motor                            242    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+HV243E                 Has a computer                                   243    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+                           (m) 9  Missing
+HV127                   Main floor material                              143    2    N    I    1    0   No   No
+                               10  NATURAL
+                               11  Earth/mud/dung
+                               20  Rudimentary
+                               21  Wood planks
+                               30  FINISHED
+                               31  Parquet or polished wood
+                               32  Vinyl tile/vinyl carpet
+                               33  Ceramic tiles
+                               34  Cement
+                               35  Carpet
+                               96  Other
+                               97  Not a dejure resident
+                           (m) 99  Missing
+HV128                   Main wall material                               145    2    N    I    1    0   No   No
+                               10  NATURAL
+                               11  Cane/tree trunks
+                               12  Sod
+                               20  Rudimentary
+                               21  Stone with mud
+                               22  Plywood
+                               23  Cardboard
+                               24  Reused wood
+                               30  FINISHED
+                               31  Cement
+                               32  Stone with lime/cement
+                               33  Bricks
+                               34  Cement blocks
+                               35  Wood planks/shingles/metal/corrugated
+                               96  Other
+                               97  Not a dejure resident
+                           (m) 99  Missing
+HV129                   Main roof material                               147    2    N    I    1    0   No   No
+                               10  NATURAL
+                               11  Thatch/grass
+                               12  Sod
+                               20  RUDIMENTARY
+                               21  Wood planks
+                               22  Cardboard
+                               30  FINISHED
+                               31  Metal/corrugated
+                               32  Wood
+                               33  Asbestos/cement fiber
+                               34  Ceramic/clay tiles
+                               35  Cement
+                               36  Roofing shingles
+                               96  Other
+                               97  Not a dejure resident
+                           (m) 99  Missing
+HV246A                 Owns cattle                                      249    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+
+HV246C                 Owns horses/ donkeys/ mules                      253    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+HV246D                 Owns goats                                       255    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+HV246E                 Owns sheep                                       257    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+HV246F                 Owns chickens/poultry                            259    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+HV246G                 Owns pigs                                        261    2    N    I    1    0   No   No
+                               0     None
+                               1:94  
+                               95    95 or more
+                               98    Unknown
+                           (m) 99    Missing
+                          (na)       Not applicable
+
+HV012                  Number of de jure members                         64    2    N    I    1    0   No   No
+                               0:90  
+
+HV216                  Number of rooms used for sleeping                190    2    N    I    1    0   No   No
+                               0:24  
+                           (m) 99    Missing
+
+
+
+
+
+*************************************************
+SA specific 
+**************************************************
+
+SH116A                 Type of fuel used for heating                    312    2    N    I    1    0   No   No
+                               1   Electricity from mains
+                               2   LPG
+                               5   Paraffin
+                               6   Coal
+                               8   Wood
+                               9   Straw/shrubs/grass
+                               10  Agricultural crop
+                               11  Animal dung
+                               12  Electricity from generator
+                               13  Electricity from other source
+                               14  Solar energy
+                               95  No heating/warming in household
+                               96  Other
+                           (m) 99  Missing
+
+SH121G                 Vacuum cleaner or floor polisher                 315    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+SH121H                 Microwave oven                                   316    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+SH121I                 Electric/gas stove                               317    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+SH121J                 Washing machine                                  318    1    N    I    1    0   No   No
+                               0  No
+                               1  Yes
+SH124A                 How is refuse collected or removed               319    2    N    I    1    0   No   No
+                               1   Removed by local authority/private company at least once a week
+                               2   Removed by local authority/private company less often than once a week
+                               3   Removed by community members contracted by municipality at least once a wee
+                               4   Removed by community members contracted by municipality less than once a we
+                               5   Removed by community members at least once a week
+                               6   Removed by community members less than once a week
+                               7   Communal refuse dump
+                               8   Communal container/central collection point
+                               9   Own refuse dump
+                               10  Own refuse burned
+                               11  No rubbish disposal/dump or leave anywhere
+                               96  Other
+SH141A                 Type of dwelling                                 331    2    N    I    1    0   No   No
+                               1   Dwelling/house or brick/concrete block structure on a separate stand/yard/f
+                               2   Traditional dwelling/hut structure made of traditional materials
+                               3   Flat or apartment in block of flats
+                               4   Cluster house in complex
+                               5   Town house/semi-detached house in complex
+                               6   Semi-detached house
+                               7   Dwelling/house/flat/room in backyard
+                               8   Informal dwelling/shack in backyard
+                               9   Informal dwelling/shack not in backyard (e.g. in informal/squatter settleme
+                               10  Room/flatlet on property or larger dwelling/servant's quarters/granny flat
+                               11  Caravan or tent
+                               96  Other
+
+*************************************************
+Lesotho specific 
+**************************************************
+SH110B                 Battery or generator                             247    1    N    I    1    0   No   No
+                               1  Yes
+                               0  No
+                           (m) 9  Missing
+SH110C                 Solar panel                                      248    1    N    I    1    0   No   No
+                               1  Yes
+                               0  No
+                           (m) 9  Missing
+SH110I                 Bed/mattress                                     249    1    N    I    1    0   No   No
+                               1  Yes
+                               0  No
+                           (m) 9  Missing
+SH110J                 Computer                                         250    1    N    I    1    0   No   No
+                               1  Yes
+                               0  No
+                           (m) 9  Missing
+SH110K                 Internet access                                  251    1    N    I    1    0   No   No
+                               1  Yes
+                               0  No
+                           (m) 9  Missing
+
+
+
