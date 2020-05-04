@@ -4,16 +4,16 @@
 
 
 
-
+install.packages("haven")
 library("haven") #faster sas import function 
 
-setwd("C:/Users/holsonwillia/Documents/fulbright/DHSLesothoSA/DHSLesothoSA")
+setwd("C:/Users/Hannah/Documents/2020/dhsproject/DHSLesothoSA-master")
 saam = read_sas("SA adult men saam.sas7bdat")
 saaw = read_sas("SA adult women saaw.sas7bdat")
 lam = read_sas("lesotho adult men lam.sas7bdat") 
 law = read_sas("lesotho adult women law.sas7bdat")
 lh = read_sas("lesotho household lh.sas7bdat")
-#sah = read_sas("SA household sah.sas7bdat")
+#sah = read_sas("SA household sah.sas7bdat") #commented out bc file too large for github. export and reimport. 
 
 #select for native sotho speakers only 
 saam = saam[which(saam$MV045C == 5),] 
@@ -22,7 +22,7 @@ saaw = saaw[which(saaw$V045C == 5),]
 
 
 #select for urban only 
-#sah = sah[which(sah$HV025 == 1),]
+#sah = sah[which(sah$HV025 == 1),] #commented out bc original sah file is too large. exported and reimported. 
 lh = lh[which(lh$HV025 == 1),] #why does N on the 'rural' page of the excel match the N for HV025 == 1??? 
 
 #library("rio")
@@ -135,6 +135,7 @@ lams = lam[keepm]
 
 
 #make a single id var and remove duplicates/same household 
+#confirmed that these are the correct id vars: https://dhsprogram.com/data/Merging-Datasets.cfm
 saaws$clusterhouse = paste(saaws$V001, saaws$V002)
 saams$clusterhouse = paste(saams$MV001, saams$MV002)
 laws$clusterhouse = paste(laws$V001, laws$V002)
@@ -160,6 +161,10 @@ l = Stack(sublams, sublaws)
 sah$clusterhouse = paste(sah$HV001, sah$HV002)
 sah = sah[!duplicated(sah$clusterhouse),] 
 lh$clusterhouse = paste(lh$HV001, lh$HV002)
+
+
+
+
 lh = lh[!duplicated(lh$clusterhouse),] #there are no duplicates at the household level - nice; 
 
 
@@ -256,4 +261,115 @@ sl$birthmonth[sl$birthmonth == 0] = 12
 #house - owns a house 
 #check Ns 
 #what to do about missings? 
+#Why are vals missing? 
 
+
+###############################################################
+###### PCA #################################################
+
+# all of these are bernoulli so
+# mean = p 
+# stddev = sqrt(p(1-p))
+drinkingwater = lh %>% group_by(HV201) %>% summarize(n())
+toilet = lh %>% group_by(HV205) %>% summarize(n())
+cookfuel = lh %>% group_by(HV226) %>% summarize(n())
+floor = lh %>% group_by(HV213) %>% summarize(n())
+roof = lh %>% group_by(HV215) %>% summarize(n())
+wall = lh %>% group_by(HV214) %>% summarize(n())
+
+drinkingwater$mean = NA
+drinkingwater$stddev = NA
+for (i in 1:length(drinkingwater$HV201)) {
+  n = drinkingwater$`n()`[i]
+  p = n/(sum(drinkingwater$`n()`))
+  drinkingwater$mean[i] = p
+  drinkingwater$stddev[i] = sqrt(p*(1-p))
+  }
+
+toilet$mean = NA
+toilet$stddev = NA
+for (i in 1:length(toilet$HV205)) {
+  n = toilet$`n()`[i]
+  p = n/(sum(toilet$`n()`))
+  toilet$mean[i] = p
+  toilet$stddev[i] = sqrt(p*(1-p))
+}
+
+cookfuel$mean = NA
+cookfuel$stddev = NA
+for (i in 1:length(cookfuel$HV226)) {
+  n = cookfuel$`n()`[i]
+  p = n/(sum(cookfuel$`n()`))
+  cookfuel$mean[i] = p
+  cookfuel$stddev[i] = sqrt(p*(1-p))
+}
+
+floor$mean = NA
+floor$stddev = NA
+for (i in 1:length(floor$HV213)) {
+  n = floor$`n()`[i]
+  p = n/(sum(floor$`n()`))
+  floor$mean[i] = p
+  floor$stddev[i] = sqrt(p*(1-p))
+}
+
+wall$mean = NA
+wall$stddev = NA
+for (i in 1:length(wall$HV214)) {
+  n = wall$`n()`[i]
+  p = n/(sum(wall$`n()`))
+  wall$mean[i] = p
+  wall$stddev[i] = sqrt(p*(1-p))
+}
+
+
+roof$mean = NA
+roof$stddev = NA
+for (i in 1:length(roof$HV215)) {
+  n = roof$`n()`[i]
+  p = n/(sum(roof$`n()`))
+  roof$mean[i] = p
+  roof$stddev[i] = sqrt(p*(1-p))
+}
+
+roof$desc = 'roof'
+wall$desc = 'wall'
+floor$desc = 'floor'
+cookfuel$desc = 'cookfuel'
+toilet$desc = 'toilet'
+drinkingwater$desc = 'drinkingwater'
+
+roof$numans = roof$HV215
+wall$numans = wall$HV214
+floor$numans = floor$HV213
+cookfuel$numans = cookfuel$HV226
+toilet$numans = toilet$HV205
+drinkingwater$numans = drinkingwater$HV201
+
+
+lpca = Stack(drinkingwater,toilet)
+lpca = Stack(lpca, cookfuel)
+lpca = Stack(lpca, floor)
+lpca = Stack(lpca, wall)
+lpca = Stack(lpca, roof)
+
+lpca=lpca[c('n()', 'mean', 'stddev', 'desc', 'numans')]
+
+mean = NA
+stddev = NA
+binvars = c('HV206', 'SH110B', 'SH110C', 'HV207', 'HV208', 'HV243A', 'HV221', 'HV209', 'SH110I', 'SH110J', 'SH110K', 'HV243B', 'HV210', 'HV211', 'HV243C', 'HV212', 'HV247', 'HV244')
+for (i in 1:length(binvars)){
+  mean[i] = sum(lh[binvars[i]])/length(lh$HV206)
+  stddev[i] = sqrt(mean[i]*(1-mean[i]))
+}
+
+desc = c('electricity', 'battery', 'solarpanel', 'radio', 'tv', 'mobilephone', 'landline', 'fridge', 'bed', 'computer', 'internet', 'watch', 'bike', 'motorcycle', 'animalcart', 'car', 'bank', 'land')
+
+binlpca = data.frame(mean, stddev, desc)
+binlpca
+
+lpca = Stack(lpca, binlpca)
+
+
+#these vars are in both SA and lesotho datasets. need to turn categorical vars into dummy vars to make matrix to feed prcomp function
+pcavars = c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep', 'electricity', 'radio', 'tv', 'landline', 'fridge', 'computer', 'watch', 'bike', 'mobilephone', 'motorcycle', 'animalcart', 'car') 
