@@ -4,7 +4,7 @@
 
 
 
-install.packages("haven")
+
 library("haven") #faster sas import function 
 
 setwd("C:/Users/Hannah/Documents/2020/dhsproject/DHSLesothoSA-master")
@@ -158,7 +158,7 @@ l = Stack(sublams, sublaws)
 
 
 
-sah$clusterhouse = paste(sah$HV001, sah$HV002)
+# sah$clusterhouse = paste(sah$HV001, sah$HV002) #commented out bc exported/reimported file already contains this col
 sah = sah[!duplicated(sah$clusterhouse),] 
 lh$clusterhouse = paste(lh$HV001, lh$HV002)
 
@@ -241,7 +241,7 @@ keeplh = c("HV201", #source of drinking water
 sah = sah[keepsah]
 lh = lh[keeplh]
 
-
+library(dplyr)
 smerge = right_join(sah, s, by = "clusterhouse") #keep all obs at individual level (s and l files)
 lmerge = right_join(lh, l, by = "clusterhouse")
 sl = Stack(smerge, lmerge)
@@ -373,3 +373,22 @@ lpca = Stack(lpca, binlpca)
 
 #these vars are in both SA and lesotho datasets. need to turn categorical vars into dummy vars to make matrix to feed prcomp function
 pcavars = c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep', 'electricity', 'radio', 'tv', 'landline', 'fridge', 'computer', 'watch', 'bike', 'mobilephone', 'motorcycle', 'animalcart', 'car') 
+
+
+
+
+
+##########################################################
+#attempt to create binary cols for categorical vars; unfinished
+h = Stack(lh, sah)
+lhnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "SH110J", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
+names(lh)[names(lh) %in% lhnames] = pcavars 
+
+#only computer is different 
+sahnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "HV243E", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
+names(sah)[names(sah) %in% sahnames] = pcavars 
+lh$drinkingwater= lapply(lh$drinkingwater, toString())
+
+lh[c("drinkingwater", "toilet", "cookfuel", "floor", "roof", "wall")] = as.factor(lh[c("drinkingwater", "toilet", "cookfuel", "floor", "roof", "wall")])
+r = fastDummies::dummy_cols(lh, select_columns = "drinkingwater")
+             
