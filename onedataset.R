@@ -240,6 +240,10 @@ keeplh = c("HV201", #source of drinking water
 
 sah = sah[keepsah]
 lh = lh[keeplh]
+lh$HV216 = ifelse (lh$HV216 == 0, 1, lh$HV216)
+sah$HV216 = ifelse (sah$HV216 == 0, 1, sah$HV216)
+lh$memsleep = lh$HV012/lh$HV216
+sah$memsleep = sah$HV012/sah$HV216
 
 library(dplyr)
 smerge = right_join(sah, s, by = "clusterhouse") #keep all obs at individual level (s and l files)
@@ -247,8 +251,8 @@ lmerge = right_join(lh, l, by = "clusterhouse")
 sl = Stack(smerge, lmerge)
 
 
-#create memsleep var for wealth index 
-sl$memsleep = sl$HV012/sl$HV216
+#create memsleep var for wealth index #commented bc it was created above 
+#sl$memsleep = sl$HV012/sl$HV216
 
 
 #recode SAS DOB var 
@@ -262,133 +266,45 @@ sl$birthmonth[sl$birthmonth == 0] = 12
 #check Ns 
 #what to do about missings? 
 #Why are vals missing? 
-
-
-###############################################################
-###### PCA #################################################
-
-# all of these are bernoulli so
-# mean = p 
-# stddev = sqrt(p(1-p))
-drinkingwater = lh %>% group_by(HV201) %>% summarize(n())
-toilet = lh %>% group_by(HV205) %>% summarize(n())
-cookfuel = lh %>% group_by(HV226) %>% summarize(n())
-floor = lh %>% group_by(HV213) %>% summarize(n())
-roof = lh %>% group_by(HV215) %>% summarize(n())
-wall = lh %>% group_by(HV214) %>% summarize(n())
-
-drinkingwater$mean = NA
-drinkingwater$stddev = NA
-for (i in 1:length(drinkingwater$HV201)) {
-  n = drinkingwater$`n()`[i]
-  p = n/(sum(drinkingwater$`n()`))
-  drinkingwater$mean[i] = p
-  drinkingwater$stddev[i] = sqrt(p*(1-p))
-  }
-
-toilet$mean = NA
-toilet$stddev = NA
-for (i in 1:length(toilet$HV205)) {
-  n = toilet$`n()`[i]
-  p = n/(sum(toilet$`n()`))
-  toilet$mean[i] = p
-  toilet$stddev[i] = sqrt(p*(1-p))
-}
-
-cookfuel$mean = NA
-cookfuel$stddev = NA
-for (i in 1:length(cookfuel$HV226)) {
-  n = cookfuel$`n()`[i]
-  p = n/(sum(cookfuel$`n()`))
-  cookfuel$mean[i] = p
-  cookfuel$stddev[i] = sqrt(p*(1-p))
-}
-
-floor$mean = NA
-floor$stddev = NA
-for (i in 1:length(floor$HV213)) {
-  n = floor$`n()`[i]
-  p = n/(sum(floor$`n()`))
-  floor$mean[i] = p
-  floor$stddev[i] = sqrt(p*(1-p))
-}
-
-wall$mean = NA
-wall$stddev = NA
-for (i in 1:length(wall$HV214)) {
-  n = wall$`n()`[i]
-  p = n/(sum(wall$`n()`))
-  wall$mean[i] = p
-  wall$stddev[i] = sqrt(p*(1-p))
-}
-
-
-roof$mean = NA
-roof$stddev = NA
-for (i in 1:length(roof$HV215)) {
-  n = roof$`n()`[i]
-  p = n/(sum(roof$`n()`))
-  roof$mean[i] = p
-  roof$stddev[i] = sqrt(p*(1-p))
-}
-
-roof$desc = 'roof'
-wall$desc = 'wall'
-floor$desc = 'floor'
-cookfuel$desc = 'cookfuel'
-toilet$desc = 'toilet'
-drinkingwater$desc = 'drinkingwater'
-
-roof$numans = roof$HV215
-wall$numans = wall$HV214
-floor$numans = floor$HV213
-cookfuel$numans = cookfuel$HV226
-toilet$numans = toilet$HV205
-drinkingwater$numans = drinkingwater$HV201
-
-
-lpca = Stack(drinkingwater,toilet)
-lpca = Stack(lpca, cookfuel)
-lpca = Stack(lpca, floor)
-lpca = Stack(lpca, wall)
-lpca = Stack(lpca, roof)
-
-lpca=lpca[c('n()', 'mean', 'stddev', 'desc', 'numans')]
-
-mean = NA
-stddev = NA
-binvars = c('HV206', 'SH110B', 'SH110C', 'HV207', 'HV208', 'HV243A', 'HV221', 'HV209', 'SH110I', 'SH110J', 'SH110K', 'HV243B', 'HV210', 'HV211', 'HV243C', 'HV212', 'HV247', 'HV244')
-for (i in 1:length(binvars)){
-  mean[i] = sum(lh[binvars[i]])/length(lh$HV206)
-  stddev[i] = sqrt(mean[i]*(1-mean[i]))
-}
-
-desc = c('electricity', 'battery', 'solarpanel', 'radio', 'tv', 'mobilephone', 'landline', 'fridge', 'bed', 'computer', 'internet', 'watch', 'bike', 'motorcycle', 'animalcart', 'car', 'bank', 'land')
-
-binlpca = data.frame(mean, stddev, desc)
-binlpca
-
-lpca = Stack(lpca, binlpca)
-
-
-#these vars are in both SA and lesotho datasets. need to turn categorical vars into dummy vars to make matrix to feed prcomp function
-pcavars = c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep', 'electricity', 'radio', 'tv', 'landline', 'fridge', 'computer', 'watch', 'bike', 'mobilephone', 'motorcycle', 'animalcart', 'car') 
-
+#fix memsleep var 
 
 
 
 
 ##########################################################
-#attempt to create binary cols for categorical vars; unfinished
-h = Stack(lh, sah)
+#pca analysis 
+##########################################################
+
+#these vars are in both SA and lesotho datasets. need to turn categorical vars into dummy vars to make matrix to feed prcomp function
+#How is memsleep coded???? appear binary in xlsx spreadsheets but that doesn't make sense.... 
+#documentation says memsleep should be treated as continuous in pca 
+pcavars = c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep', 'electricity', 'radio', 'tv', 'landline', 'fridge', 'computer', 'watch', 'bike', 'mobilephone', 'motorcycle', 'animalcart', 'car') 
+
+#clean up and rename vars
 lhnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "SH110J", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
-names(lh)[names(lh) %in% lhnames] = pcavars 
+lh = lh[lhnames]
+names(lh) = pcavars
 
 #only computer is different 
 sahnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "HV243E", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
-names(sah)[names(sah) %in% sahnames] = pcavars 
-lh$drinkingwater= lapply(lh$drinkingwater, toString())
+sah = sah[sahnames]
+names(sah) = pcavars
 
-lh[c("drinkingwater", "toilet", "cookfuel", "floor", "roof", "wall")] = as.factor(lh[c("drinkingwater", "toilet", "cookfuel", "floor", "roof", "wall")])
-r = fastDummies::dummy_cols(lh, select_columns = "drinkingwater")
-             
+ls = Stack(lh, sah)
+
+library(dummies)  
+library(factoextra)
+
+dlh = cbind(lh, dummy(lh$drinkingwater, sep = "drinkingwater"), dummy(lh$toilet, sep = "toilet"),dummy(lh$cookfuel, sep = "cookfuel"),
+                dummy(lh$floor, sep = "floor"), dummy(lh$roof, sep = "roof"), dummy(lh$wall, sep = "wall"))
+dsah = cbind(sah, dummy(sah$drinkingwater, sep = "drinkingwater"), dummy(sah$toilet, sep = "toilet"),dummy(sah$cookfuel, sep = "cookfuel"),
+            dummy(sah$floor, sep = "floor"), dummy(sah$roof, sep = "roof"), dummy(sah$wall, sep = "wall"))
+dlsh = cbind(ls, dummy(ls$drinkingwater, sep = "drinkingwater"), dummy(ls$toilet, sep = "toilet"),dummy(ls$cookfuel, sep = "cookfuel"),
+            dummy(ls$floor, sep = "floor"), dummy(ls$roof, sep = "roof"), dummy(ls$wall, sep = "wall"))
+
+lspca = prcomp(dlsh[,!names(dlsh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
+lpca = prcomp(dlh[,!names(dlh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
+spca = prcomp(dsah[,!names(dsah) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
+
+lspca$center
+
