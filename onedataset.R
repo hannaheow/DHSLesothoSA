@@ -2,12 +2,19 @@
 # wealth, age, country, gender, edu  
 # logistic regression 
 
+##### ADD BMI ####### 
+#age interacts with gender 
+#cubic spline for age 
+
+#initial model: cs for age, interaction between age and gender, cs for wealth, cs (or not) for edu, include all two-way interactions 
+#wealth and country interaction (important), but include all for starters 
+
 
 
 
 library("haven") #faster sas import function 
 
-setwd("C:/Users/Hannah/Documents/2020/dhsproject/DHSLesothoSA-master")
+setwd("C:/Users/Hannah/Documents/spring2020/dhsproject/DHSLesothoSA-master")
 saam = read_sas("SA adult men saam.sas7bdat")
 saaw = read_sas("SA adult women saaw.sas7bdat")
 lam = read_sas("lesotho adult men lam.sas7bdat") 
@@ -161,10 +168,6 @@ l = Stack(sublams, sublaws)
 # sah$clusterhouse = paste(sah$HV001, sah$HV002) #commented out bc exported/reimported file already contains this col
 sah = sah[!duplicated(sah$clusterhouse),] 
 lh$clusterhouse = paste(lh$HV001, lh$HV002)
-
-
-
-
 lh = lh[!duplicated(lh$clusterhouse),] #there are no duplicates at the household level - nice; 
 
 
@@ -268,8 +271,8 @@ sl$birthmonth[sl$birthmonth == 0] = 12
 #Why are vals missing? 
 #fix memsleep var 
 
-
-
+#create col of ids to cbind back later - probably not best practice here. yikes.
+id = c(lh$clusterhouse, sah$clusterhouse)
 
 ##########################################################
 #pca analysis 
@@ -282,29 +285,45 @@ pcavars = c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'mem
 
 #clean up and rename vars
 lhnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "SH110J", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
-lh = lh[lhnames]
-names(lh) = pcavars
+lhwealth = lh[lhnames]
+names(lhwealth) = pcavars
 
 #only computer is different 
 sahnames = c("HV201", "HV205", "HV226", "HV213", "HV215", "HV214", "memsleep", "HV206", "HV207", "HV208", "HV221", "HV209", "HV243E", "HV243B", "HV210", "HV243A", "HV211", "HV243C", "HV212")
-sah = sah[sahnames]
-names(sah) = pcavars
+sahwealth = sah[sahnames]
+names(sahwealth) = pcavars
 
-ls = Stack(lh, sah)
+lshwealth = Stack(lhwealth, sahwealth)
 
 library(dummies)  
 library(factoextra)
 
-dlh = cbind(lh, dummy(lh$drinkingwater, sep = "drinkingwater"), dummy(lh$toilet, sep = "toilet"),dummy(lh$cookfuel, sep = "cookfuel"),
-                dummy(lh$floor, sep = "floor"), dummy(lh$roof, sep = "roof"), dummy(lh$wall, sep = "wall"))
-dsah = cbind(sah, dummy(sah$drinkingwater, sep = "drinkingwater"), dummy(sah$toilet, sep = "toilet"),dummy(sah$cookfuel, sep = "cookfuel"),
-            dummy(sah$floor, sep = "floor"), dummy(sah$roof, sep = "roof"), dummy(sah$wall, sep = "wall"))
-dlsh = cbind(ls, dummy(ls$drinkingwater, sep = "drinkingwater"), dummy(ls$toilet, sep = "toilet"),dummy(ls$cookfuel, sep = "cookfuel"),
-            dummy(ls$floor, sep = "floor"), dummy(ls$roof, sep = "roof"), dummy(ls$wall, sep = "wall"))
+dlh = cbind(lhwealth, dummy(lhwealth$drinkingwater, sep = "drinkingwater"), dummy(lhwealth$toilet, sep = "toilet"),dummy(lhwealth$cookfuel, sep = "cookfuel"),
+                dummy(lhwealth$floor, sep = "floor"), dummy(lhwealth$roof, sep = "roof"), dummy(lhwealth$wall, sep = "wall"))
+dsah = cbind(sahwealth, dummy(sahwealth$drinkingwater, sep = "drinkingwater"), dummy(sahwealth$toilet, sep = "toilet"),dummy(sahwealth$cookfuel, sep = "cookfuel"),
+            dummy(sahwealth$floor, sep = "floor"), dummy(sahwealth$roof, sep = "roof"), dummy(sahwealth$wall, sep = "wall"))
+dlsh = cbind(lshwealth, dummy(lshwealth$drinkingwater, sep = "drinkingwater"), dummy(lshwealth$toilet, sep = "toilet"),dummy(lshwealth$cookfuel, sep = "cookfuel"),
+            dummy(lshwealth$floor, sep = "floor"), dummy(lshwealth$roof, sep = "roof"), dummy(lshwealth$wall, sep = "wall"))
 
-lspca = prcomp(dlsh[,!names(dlsh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
-lpca = prcomp(dlh[,!names(dlh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
-spca = prcomp(dsah[,!names(dsah) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')])
+lspca = prcomp(dlsh[,!names(dlsh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')], rank = 1)
+lpca = prcomp(dlh[,!names(dlh) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')], rank = 1)
+spca = prcomp(dsah[,!names(dsah) %in% c('drinkingwater', 'toilet', 'cookfuel', 'floor', 'roof', 'wall', 'memsleep')], rank = 1)
 
-lspca$center
+lswealthi = lspca$x
+lwealthi = lpca$x
+swealthi = spca$x
+locspecwealth = rbind(lwealthi, swealthi)
 
+
+lswealthi = as.data.frame(lswealthi)
+lswealthi = cbind(lspca$x, c(rep("L",2798), rep("S", 963)))
+
+allwealthvars = cbind(lswealthi, locspecwealth, id)
+colnames(allwealthvars)[1] = "wealth"
+colnames(allwealthvars)[2] = "country"
+colnames(allwealthvars)[3] = "locspecwealth"
+
+
+
+f = merge(allwealthvars, sl, by.x = "id", by.y = "clusterhouse")
+f = f[c('id', 'wealth', 'country.x', 'country.y', 'locspecwealth', 'memsleep', 'diabdiag', 'diabtreat', 'gender', 'age', 'eduyears')]
